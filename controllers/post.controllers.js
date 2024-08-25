@@ -1,12 +1,10 @@
-import { createPostDB, updatePostDB} from "../models/post.model.js";
+import { createPostDB, updatePostDB, findPostDB} from "../models/post.model.js";
 import { findUserDB } from "../models/user.model.js";
 
 export const createPost = async(req, res) => {
     const { userId } = req.data
     const { content } = req.body
     try {
-        const checkUser = await findUserDB({_id: userId})
-        if(!checkUser) throw new Error('User not exist')
         if(!content) throw new Error('content is required')
         const newPost = await createPostDB({
             userId,
@@ -22,7 +20,6 @@ export const createPost = async(req, res) => {
         })
     }
 }
-
 export const editPost = async (req, res) => {
     const { userId } = req.data
     const { postId } = req.params
@@ -38,11 +35,12 @@ export const editPost = async (req, res) => {
                 updatedAt: Date.now()
             }
         )
-        if(!post) throw new Error('User not exist')
+        if(!post) throw new Error('This post not exist')
         if(!content) throw new Error('content is required')
+        const crrPost = await findPostDB({_id: postId, userId})
         res.status(201).send({
-            message: "Create Post success",
-            post
+            message: "Edited post success",
+            crrPost
         })
     } catch (error) {
         res.status(403).send({

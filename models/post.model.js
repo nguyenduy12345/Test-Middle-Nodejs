@@ -13,7 +13,7 @@ const postsSchema = new mongoose.Schema({
     },
     updatedAt: {
         type: Date,
-        default: '',
+        default: Date.now(),
     },
     isPublic: Boolean
 })
